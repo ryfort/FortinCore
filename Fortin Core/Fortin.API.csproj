@@ -8,11 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="GitHubClient.cs" />
+    <Compile Remove="IGitHubClient.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fortin.Proxy\Fortin.Proxy.csproj" />
     <ProjectReference Include="..\Fortin_Infrastructure\Fortin.Infrastructure.csproj" />
   </ItemGroup>
 
