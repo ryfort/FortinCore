@@ -1,6 +1,8 @@
 ﻿using Fortin.Common;
-using Fortin_Infrastructure.Interface;
+using Fortin.Common.Configuration;
+using Fortin.Infrastructure.Interface;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,30 +16,31 @@ namespace Fortin.Infrastructure.Implementation
     public class UserRepository : IUserRepository
     {
         private readonly HttpClient _httpClientFactory;
+        private readonly ConnectionStrings _connectionStrings;
 
-        public UserRepository(IHttpClientFactory httpClientFactory)
+        public UserRepository(IHttpClientFactory httpClientFactory, IOptionsMonitor<ConnectionStrings> options)
         {
             _httpClientFactory = httpClientFactory.CreateClient();
+            _connectionStrings = options.CurrentValue;
         }
 
         public async Task<User> GetById(int id)
         {
             User user = new();
-            string connectionString = "Data Source=localhost;Initial Catalog=Fortin_Common;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
-            using (SqlConnection connection = new SqlConnection(@"Data Source=localhost;Initial Catalog=Fortin_Common;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"))
+            using (SqlConnection connection = new SqlConnection(_connectionStrings.FortinCommon))
             {
-                string queryStatement = $"SELECT * FROM dbo.User where Id={id} ORDER BY Id";
+                string queryStatement = $"SELECT * FROM dbo.[User] where Id={id} ORDER BY Id";
 
                 using (SqlCommand command = new SqlCommand(queryStatement, connection))
                 {
                     await connection.OpenAsync();
 
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    var reader = await command.ExecuteReaderAsync();
 
                     if (reader.HasRows)
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             user = new User()
                             {
@@ -53,6 +56,38 @@ namespace Fortin.Infrastructure.Implementation
             }
 
             return user;
+        }
+
+        public async Task<List<User>> GetUsers()
+        {
+            List<User> userList = new();
+
+            using(SqlConnection connection = new SqlConnection(_connectionStrings.FortinCommon))
+            {
+                string queryStatement = $"SELECT * FROM dbo.[User] ORDER BY Id";
+
+                using(SqlCommand command = new SqlCommand(queryStatement, connection))
+                {
+                    await connection.OpenAsync();
+
+                    var reader = await command.ExecuteReaderAsync();
+
+                    while (await reader.ReadAsync())
+                    {
+                        User user = new()
+                        {
+                            Id = (long)reader["Id"],
+                            Username = reader["Username"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString()
+                        };
+
+                        userList.Add(user);
+                    }
+                }
+            }
+
+            return userList;
         }
     }
 }
