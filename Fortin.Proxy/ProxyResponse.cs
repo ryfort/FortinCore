@@ -10,5 +10,6 @@ namespace Fortin.Proxy
     {
         public T Data { get; set; }
         public string Status { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }

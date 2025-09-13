@@ -30,7 +30,7 @@ namespace Fortin.Infrastructure.Implementation
 
             using (SqlConnection connection = new SqlConnection(_connectionStrings.FortinCommon))
             {
-                string queryStatement = $"SELECT * FROM dbo.[User] where Id={id} ORDER BY Id";
+                string queryStatement = $"SELECT * FROM dbo.[Users] where Id={id} ORDER BY Id";
 
                 using (SqlCommand command = new SqlCommand(queryStatement, connection))
                 {
@@ -64,7 +64,7 @@ namespace Fortin.Infrastructure.Implementation
 
             using(SqlConnection connection = new SqlConnection(_connectionStrings.FortinCommon))
             {
-                string queryStatement = $"SELECT * FROM dbo.[User] ORDER BY Id";
+                string queryStatement = $"SELECT * FROM dbo.[Users] ORDER BY Id";
 
                 using(SqlCommand command = new SqlCommand(queryStatement, connection))
                 {

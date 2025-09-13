@@ -1,4 +1,5 @@
 ﻿
+using Fortin.Common.Dtos;
 using Microsoft.Net.Http.Headers;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -7,24 +8,35 @@ namespace Fortin.Proxy
 {
     public class GitHubClient : HttpProxy
     {
-        //private readonly HttpClient _client;
-
         public GitHubClient(HttpClient client) : base(client)
         {
-            //_client = client;
             ConfigureClient();
         }
 
-        public async Task<int> GetFollowersCount()
+        public async Task<int> GetFollowersCount(string username)
         {
-            var httpResponseMessage = await GetAsync<GithubUserDto[], object>("users/danpdc/followers", null);
+            var users = await GetFollowers(username);
 
-            return httpResponseMessage?.Data.Length ?? 0;
+            return users?.Length ?? 0;
         }
 
-        public async Task<GithubUserDto[]> GetFollowers()
+        public async Task<GithubUserDto[]> GetFollowers(string username)
         {
-            var httpResponseMessage = await GetAsync<GithubUserDto[], object>("users/danpdc/followers", null);
+            var httpResponseMessage = await GetAsync<GithubUserDto[], object>($"users/{username}/followers", null);
+
+            return httpResponseMessage?.Data;
+        }
+
+        public async Task<GithubUserDto> GetUserByUsername(string username)
+        {
+            var httpResponseMessage = await GetAsync<GithubUserDto, object>($"users/{username}", null);
+
+            return httpResponseMessage?.Data;
+        }
+
+        public async Task<GithubUserRepo[]> GithubUserRepos(string username)
+        {
+            var httpResponseMessage = await GetAsync<GithubUserRepo[], object>($"users/{username}/repos", null);
 
             return httpResponseMessage?.Data;
         }

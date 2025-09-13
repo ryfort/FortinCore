@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fortin.Proxy
+namespace Fortin.Common.Dtos
 {
     public class GithubUserDto
     {
