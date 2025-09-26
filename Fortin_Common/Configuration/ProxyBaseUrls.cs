@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Fortin.Common.Configuration
 {
-    public class ConnectionStrings
+    public class ProxyBaseUrls
     {
-        public string FortinCommon { get; set; }
-        public string AdventureWorks { get; set; }
+        public string GitHubAPI { get; set; } = string.Empty;
+        public string FortinAPI { get; set; } = string.Empty;
     }
 }

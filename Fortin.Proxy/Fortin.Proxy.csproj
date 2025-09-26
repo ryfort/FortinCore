@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fortin_Common\Fortin.Common.csproj" />
+    <ProjectReference Include="..\Fortin_Infrastructure\Fortin.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

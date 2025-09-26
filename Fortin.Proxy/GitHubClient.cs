@@ -1,5 +1,7 @@
 ﻿
+using Fortin.Common.Configuration;
 using Fortin.Common.Dtos;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -8,8 +10,10 @@ namespace Fortin.Proxy
 {
     public class GitHubClient : HttpProxy
     {
-        public GitHubClient(HttpClient client) : base(client)
+        private readonly ProxyBaseUrls _baseUrl;
+        public GitHubClient(HttpClient client, IOptionsMonitor<ProxyBaseUrls> proxyUrls) : base(client)
         {
+            _baseUrl = proxyUrls.CurrentValue;
             ConfigureClient();
         }
 
@@ -43,7 +47,7 @@ namespace Fortin.Proxy
 
         private void ConfigureClient()
         {
-            _client.BaseAddress = new Uri("https://api.github.com/");
+            _client.BaseAddress = new Uri(_baseUrl.GitHubAPI);
             _client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/vnd.github.v3+json");
             _client.DefaultRequestHeaders.Add(HeaderNames.UserAgent, "HttpClientFactory");
         }
