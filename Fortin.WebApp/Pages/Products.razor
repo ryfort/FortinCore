@@ -1,0 +1,142 @@
+﻿@page "/product"
+@using Fortin.Common
+@using Fortin.Common.Configuration
+@using Fortin.Common.Dtos
+@using Fortin.Proxy
+@using Microsoft.Extensions.Options
+@inject AdventureWorksClient _adventureWorksClient
+@inject IOptionsMonitor<ProxyBaseUrls> _baseUrls
+
+<h3>Products</h3>
+
+@if (products != null)
+{
+    <div class="row g-3">
+        <div class="col-auto">
+            <label for="productNameInput" class="form-label">Search Product</label>
+            <input id="productNameInput" class="form-control" type="text" placeholder="Enter product name" @bind-value=@enteredText />
+        </div>
+        @* <div class="col-auto">
+            <label for="inputPage" class="form-label">Page</label>
+            <InputSelect id="inputPage" class="form-select" @bind-Value=@selectedPage>
+                <option selected>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+            </InputSelect>
+        </div> *@
+        <div class="col-auto">
+            <label for="inputPageSize" class="form-label">Page Size</label>
+            <InputSelect id="inputPageSize" class="form-select" @bind-Value=@pageSize>
+                <option selected>5</option>
+                <option>10</option>
+                <option>20</option>
+            </InputSelect>
+        </div>
+        <div class="col-auto">
+            <button id="searchButton" class="btn btn-primary" style="margin-top: 32px;" @onclick="FilterProducts">Search</button>
+        </div>
+    </div>
+    <nav aria-label="...">
+        <ul class="pagination pagination-sm mt-2">
+           @*  <li class="page-item disabled">
+                <button class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</button>
+            </li> *@
+            @for (int i = 1; i <= products.TotalPages; i++)
+            {
+                int rowNumber = i;
+
+                <li class="page-item @(i == products.CurrentPage ? "active" : "")">
+                    @if (i == products.CurrentPage)
+                    {
+                        <span class="page-link">@i</span>
+                    }
+                    else
+                    {
+                        <button class="page-link" @onclick="@(e => PageChanged(rowNumber))">@i</button>
+                    }
+                </li>
+            }
+            @* <li class="page-item">
+                <button class="page-link" @onclick="PagesetChanged">Next</button>
+            </li> *@
+        </ul>
+    </nav>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Number</th>
+                <th>List Price</th>
+                <th>Color</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products.Items)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.ProductNumber</td>
+                    <td>@product.ListPrice</td>
+                    <td>@product.Color</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+@code {
+    private PagedList<ProductDto>? products;
+    private string enteredText = string.Empty;
+    private int selectedPage = 1;
+    private int pageSize = 10;
+    private int pageSet = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await GetProducts();
+        }
+        catch (Exception ex) { }
+    }
+
+    private async Task GetProducts()
+    {
+        var body = new ProductResourceParameter()
+        {
+            ProductName = enteredText,
+            Page = selectedPage,
+            PageSize = pageSize
+        };
+
+        products = await _adventureWorksClient.GetProductsAsync(body);
+    }
+
+    private async void FilterProducts()
+    {
+        selectedPage = 1;
+
+        await GetProducts();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void PageChanged(int pageNumber)
+    {
+        selectedPage = pageNumber;
+        await GetProducts();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    // private async void PagesetChanged()
+    // {
+    //     selectedPage += 5;
+    //     // pageSet = selected
+    //     await GetProducts();
+    //     await InvokeAsync(StateHasChanged);
+    // }
+}

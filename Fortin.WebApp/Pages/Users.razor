@@ -1,0 +1,162 @@
+﻿@page "/user"
+@using Fortin.Common
+@using Fortin.Common.Configuration
+@using Fortin.Common.Dtos
+@using Fortin.Proxy
+@using Microsoft.Extensions.Options
+@inject FortinAPIClient _fortinClient
+@inject AdventureWorksClient _adventureWorksClient
+@inject IOptionsMonitor<ProxyBaseUrls> _baseUrls
+
+<PageTitle>Users</PageTitle>
+<h3>Users</h3>
+
+@if (users != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Username</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+<h3>Products</h3>
+
+@if (products != null)
+{
+    <div class="row g-3">
+        <div class="col-auto">
+            <label for="productNameInput" class="form-label">Search Product</label>
+            <input id="productNameInput" class="form-control" type="text" placeholder="Enter product name" @bind-value=@enteredText />
+        </div>
+        <div class="col-auto">
+            <label for="inputPage" class="form-label">Page</label>
+            <InputSelect id="inputPage" class="form-select" @bind-Value=@selectedPage>
+                <option selected>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+            </InputSelect>
+        </div>
+        <div class="col-auto">
+            <label for="inputPageSize" class="form-label">Page Size</label>
+            <InputSelect id="inputPageSize" class="form-select" @bind-Value=@pageSize>
+                <option selected>5</option>
+                <option>10</option>
+                <option>20</option>
+            </InputSelect>
+        </div>
+        <div class="col-auto">
+            <button id="searchButton" class="btn btn-primary" style="margin-top: 32px;" @onclick="FilterProducts">Search</button>
+        </div>
+    </div>
+    <nav aria-label="...">
+        <ul class="pagination pagination-sm mt-2">
+            @for (int i = 1; i <= products.TotalPages; i++)
+            {
+                int rowNumber = i;
+                <li class="page-item @(i == products.CurrentPage? "active" : "")"><button class="page-link" @onclick="@(e => PageChanged(rowNumber))">@i</button></li>
+            }
+@* 
+            @if ((numOfPages % pageSize) != 0)
+            {
+                <li class="page-item"><a class="page-link" href="#">@(numOfPages + 1)</a></li>
+             }*@
+           @*  <li class="page-item active" aria-current="page">
+                <span class="page-link">1</span>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li> *@
+        </ul>
+    </nav>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Number</th>
+                <th>List Price</th>
+                <th>Color</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products.Items)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.ProductNumber</td>
+                    <td>@product.ListPrice</td>
+                    <td>@product.Color</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+@code {
+    private User[]? users;
+    private PagedList<ProductDto>? products;
+    private string enteredText = string.Empty;
+    private int selectedPage = 1;
+    private int pageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            users = await _fortinClient.GetUsersAsync();
+
+            var body = new ProductResourceParameter()
+            {
+                Page = selectedPage,
+                PageSize = pageSize
+            };
+
+            products = await _adventureWorksClient.GetProductsAsync(body);
+        }
+        catch(Exception ex){}
+    }
+
+    private async void FilterProducts()
+    {
+        var body = new ProductResourceParameter()
+        {
+            ProductName = enteredText,
+            Page = selectedPage,
+            PageSize = pageSize
+        };
+
+        products = await _adventureWorksClient.GetProductsAsync(body);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void PageChanged(int pageNumber)
+    {
+        selectedPage = pageNumber;
+        FilterProducts();
+    }
+}
