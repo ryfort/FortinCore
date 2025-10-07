@@ -1,6 +1,7 @@
 ﻿using Fortin.Common.Dtos;
 using Fortin.Infrastructure.Entities;
 using Fortin.Infrastructure.Interface;
+using Fortin.Infrastructure.Mappings;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,11 +19,30 @@ namespace Fortin.Infrastructure.Implementation
         {
             _appDbContext = appDbContext;
         }
-        public async Task<User> GetUserById(long id)
+
+        public async Task<User> AddUserAsync(AddEmployeeDto newUser)
+        {
+            var employee = new User
+            {
+                Username = newUser.Username,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName
+            };
+
+            _appDbContext.Users.Add(employee);
+            _appDbContext.SaveChanges();
+
+            return employee;
+        }
+
+        public async Task<UserDto?> GetUserById(long id)
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
 
-            return user;
+            if (user == null)
+                return null;
+
+            return user.ToDto();
         }
 
         public async Task<IEnumerable<User>> GetUsersAsync(UserResourceParameter userResourceParameter)

@@ -39,11 +39,28 @@ namespace Fortin.API.Controllers
             return Ok(users);
         }
 
+        [HttpPost("/users")]
+        public async Task<ActionResult> CreateUser([FromBody] AddEmployeeDto user)
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            var createdUser = await _userEfRepository.AddUserAsync(user);
+
+            return CreatedAtRoute("GetUserById", new { userId = createdUser.Id }, createdUser);
+        }
+
         [HttpGet("/users/{userId}", Name = "GetUserById")]
         public async Task<ActionResult> GetUserByIdAsync(int userId)
         {
-            //var user = await _userRepository.GetById(userId);
             var user = await _userEfRepository.GetUserById(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
 
             return Ok(user);
         }

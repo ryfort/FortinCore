@@ -10,7 +10,8 @@ namespace Fortin.Infrastructure.Interface
 {
     public interface IUserEFRepository
     {
-        Task<User> GetUserById(long id);
+        Task<UserDto?> GetUserById(long id);
         Task<IEnumerable<User>> GetUsersAsync(UserResourceParameter userResourceParameter);
+        Task<User> AddUserAsync(AddEmployeeDto user);
     }
 }
