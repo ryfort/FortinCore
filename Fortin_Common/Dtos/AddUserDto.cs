@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fortin.Common.Dtos
 {
-    public class AddEmployeeDto
+    public class AddUserDto
     {
         public string Username { get; set; }
         public string FirstName { get; set; }

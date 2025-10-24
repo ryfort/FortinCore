@@ -1,0 +1,30 @@
+﻿@page "/add-user"
+@using Microsoft.Extensions.Options
+@inject Fortin.Proxy.FortinAPIClient _fortinClient
+@inject IOptionsMonitor<ProxyBaseUrls> _baseUrls
+@inject NavigationManager NavigationManager
+
+<PageTitle>Add New User</PageTitle>
+
+<div class="row justify-content-center">
+    <div class="col-6">
+        <UserForm IsEditMode="false" OnValidUserSubmit="AddUserSubmit"></UserForm>
+    </div>
+</div>
+
+@code {
+
+    private async Task AddUserSubmit(User user)
+    {
+        var userToAdd = new AddUserDto()
+        {
+            Username = user.Username,
+            FirstName = user.FirstName,
+            LastName = user.LastName
+        };
+
+        var newUser = await _fortinClient.CreateUserAsync(userToAdd);
+
+        NavigationManager.NavigateTo("/users");
+    }
+}

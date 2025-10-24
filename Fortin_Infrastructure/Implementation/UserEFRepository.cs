@@ -20,7 +20,7 @@ namespace Fortin.Infrastructure.Implementation
             _appDbContext = appDbContext;
         }
 
-        public async Task<User> AddUserAsync(AddEmployeeDto newUser)
+        public async Task<User> AddUserAsync(AddUserDto newUser)
         {
             var employee = new User
             {

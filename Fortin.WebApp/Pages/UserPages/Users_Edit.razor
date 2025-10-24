@@ -1,0 +1,44 @@
+﻿@page "/edit-user/{Id:long}"
+@using Microsoft.Extensions.Options
+@inject FortinAPIClient _fortinClient
+@inject IOptionsMonitor<ProxyBaseUrls> _baseUrls
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit User</PageTitle>
+
+<div class="row justify-content-center">
+    <div class="col-6">
+        <UserForm IsEditMode="true" OnValidUserSubmit="UpdateUserAsync" UserId="@Id"></UserForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    // public User? User { get; set; } = new();
+
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     try
+    //     {
+    //         var users = await _fortinClient.GetUsersAsync();
+    //         User = users.FirstOrDefault(user => user.Id == Id);
+    //     }
+    //     catch (Exception ex) { }
+    // }
+
+    private async Task UpdateUserAsync(User user)
+    {
+        var userToAdd = new AddUserDto()
+        {
+            Username = user.Username,
+            FirstName = user.FirstName,
+            LastName = user.LastName
+        };
+
+        // var newUser = await _fortinClient.CreateUserAsync(userToAdd);
+
+        NavigationManager.NavigateTo("/users");
+    }
+}

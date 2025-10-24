@@ -1,0 +1,56 @@
+﻿@using Fortin.Proxy
+@inject FortinAPIClient _fortinClient
+
+@if (User is not null)
+{
+    <h3>@Title</h3>
+
+    <EditForm Model="User" Enhance="true" method="post" FormName="AddOrEditUser" OnValidSubmit="HandleSubmit">
+        <div class="mb-3">
+            <label for="Username">Username</label>
+            <InputText id="Username" @bind-Value="User.Username" class="form-control"></InputText>
+        </div>
+        <div class="mb-3">
+            <label for="Username">First Name</label>
+            <InputText @bind-Value="User.FirstName" class="form-control"></InputText>
+        </div>
+        <div class="mb-3">
+            <label for="Username">Last Name</label>
+            <InputText @bind-Value="User.LastName" class="form-control"></InputText>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary ml-3">Save</button>
+            <a href="/users" class="btn btn-warning">Cancel</a>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public bool IsEditMode { get; set; } = false;
+
+    [Parameter]
+    public long UserId { get; set; }
+
+    [Parameter]
+    public EventCallback<User> OnValidUserSubmit { get; set; }
+
+    [SupplyParameterFromForm]
+    public User? User { get; set; } = new();
+
+    private string Title => IsEditMode ? $"Edit User - {User?.FirstName} {User?.LastName}" : "Add New User";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEditMode)
+        {
+            var users = await _fortinClient.GetUsersAsync();
+            User = users.FirstOrDefault(user => user.Id == UserId);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        await OnValidUserSubmit.InvokeAsync(User);
+    }
+}

@@ -1,0 +1,77 @@
+﻿@page "/users"
+@using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject FortinAPIClient _fortinClient
+@inject IOptionsMonitor<ProxyBaseUrls> _baseUrls
+@* @inject NavigationManager NavigationManager *@
+
+<PageTitle>Users</PageTitle>
+<h3>Users</h3>
+<a href="/add-user" class="btn btn-primary">Add New User</a>
+@if (users != null)
+{
+    @* <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Username</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" href="@($"/edit-user/{user.Id}")">Edit</a>
+                        <a class="btn btn-sm btn-danger" href="#">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table> *@
+
+    <QuickGrid Class="table" Items="@users.AsQueryable()">
+        <TemplateColumn Title="Username" SortBy="@sortByUserName">
+            <div class="flex items-center">
+                <nobr>
+                    <strong>@context.Username</strong>
+                </nobr>
+            </div>
+        </TemplateColumn>
+        <PropertyColumn Property="user => user.FirstName" Sortable="true"/>
+        <PropertyColumn Property="user => user.LastName" Sortable="true" />
+
+        <TemplateColumn Context="users">
+            <a class="btn btn-sm btn-primary" href="@($"/edit-user/{users.Id}")">Edit</a>
+            <a class="btn btn-sm btn-danger" href="#">Delete</a>
+        </TemplateColumn>
+    </QuickGrid>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+@code {
+    private User[]? users;
+    private int selectedPage = 1;
+    private int pageSize = 10;
+    GridSort<User> sortByUserName = GridSort<User>
+                                    .ByAscending(p => p.Username);
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            users = await _fortinClient.GetUsersAsync();
+        }
+        catch (Exception ex) { }
+    }
+}

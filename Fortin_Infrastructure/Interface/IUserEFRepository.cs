@@ -12,6 +12,6 @@ namespace Fortin.Infrastructure.Interface
     {
         Task<UserDto?> GetUserById(long id);
         Task<IEnumerable<User>> GetUsersAsync(UserResourceParameter userResourceParameter);
-        Task<User> AddUserAsync(AddEmployeeDto user);
+        Task<User> AddUserAsync(AddUserDto user);
     }
 }
