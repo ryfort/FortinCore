@@ -1,11 +1,10 @@
 ﻿@page "/product"
-@using Fortin.Common
-@using Fortin.Common.Configuration
-@using Fortin.Common.Dtos
-@using Fortin.Proxy
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
 @using Microsoft.Extensions.Options
 @inject AdventureWorksClient _adventureWorksClient
 @inject IOptionsMonitor<ProxyBaseUrls> _baseUrls
+@inject IDbContextFactory<Fortin.Infrastructure.AppDbContext> Db
 
 <h3>Products</h3>
 
@@ -62,7 +61,7 @@
             </li> *@
         </ul>
     </nav>
-    <table class="table">
+    @* <table class="table">
         <thead>
             <tr>
                 <th>Product Name</th>
@@ -82,7 +81,14 @@
                 </tr>
             }
         </tbody>
-    </table>
+    </table> *@
+
+    <QuickGrid Class="table" Items="products.Items.AsQueryable()" Virtualize="true">
+        <PropertyColumn Property="product => product.Name" Title="Product Name" Sortable="true" />
+        <PropertyColumn Property="product => product.ProductNumber" Title="Product Number" Sortable="true" />
+        <PropertyColumn Property="product => product.ListPrice" Title="List Price" Sortable="true" />
+        <PropertyColumn Property="product => product.Color"/>
+    </QuickGrid>
 }
 else
 {
@@ -101,6 +107,11 @@ else
         try
         {
             await GetProducts();
+
+            using var dbContext = Db.CreateDbContext();
+
+            var totalUsers = await dbContext.Users.CountAsync();
+            var query = dbContext.Users.AsNoTracking().OrderByDescending(x => x.Id);
         }
         catch (Exception ex) { }
     }

@@ -28,7 +28,7 @@ namespace Fortin.Infrastructure.Implementation
             if (!string.IsNullOrEmpty(resourceParameter.ProductName))
                 collection = collection.Where(p => p.Name.Contains(resourceParameter.ProductName.Trim()));
 
-            var productCollection = collection.Select(p => new ProductDto()
+            var productCollection = collection.AsNoTracking().Select(p => new ProductDto()
             {
                 Name = p.Name,
                 ProductNumber = p.ProductNumber,
