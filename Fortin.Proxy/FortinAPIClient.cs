@@ -1,5 +1,6 @@
 ﻿using Fortin.Common;
 using Fortin.Common.Configuration;
+using Fortin.Common.Dtos;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using System;
@@ -22,6 +23,13 @@ namespace Fortin.Proxy
         public async Task<User[]> GetUsersAsync()
         {
             var httpResponseMessage = await GetAsync<User[], object>("users", null);
+
+            return httpResponseMessage?.Data;
+        }
+
+        public async Task<User> CreateUserAsync(AddUserDto newUser)
+        {
+            var httpResponseMessage = await PostAsync<User, object> ("users", newUser);
 
             return httpResponseMessage?.Data;
         }

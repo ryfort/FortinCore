@@ -40,7 +40,7 @@ namespace Fortin.API.Controllers
         }
 
         [HttpPost("/users")]
-        public async Task<ActionResult> CreateUser([FromBody] AddEmployeeDto user)
+        public async Task<ActionResult> CreateUser([FromBody] AddUserDto user)
         {
             if (user == null)
             {
