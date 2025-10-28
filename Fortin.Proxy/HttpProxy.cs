@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Azure.Core;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Net.Http;
@@ -85,6 +86,50 @@ namespace Fortin.Proxy
                 
             }
 
+            return proxyResponse;
+        }
+
+        protected async Task<ProxyResponse<TResponse>> PutAsync<TResponse, TRequest>(string uri, TRequest content)
+            {
+            var proxyResponse = new ProxyResponse<TResponse>();
+            try
+            {
+                var serialized = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
+
+                using HttpResponseMessage response = await _client.PutAsync(uri, serialized);
+                if (!response.IsSuccessStatusCode)
+                {
+                    proxyResponse.Status = response.StatusCode.ToString();
+                    proxyResponse.ErrorMessage = response.ReasonPhrase ?? string.Empty;
+                    return proxyResponse;
+                }
+                proxyResponse.Status = response.StatusCode.ToString();
+            }
+            catch (Exception ex)
+            {
+                
+            }
+            return proxyResponse;
+        }
+
+        protected async Task<ProxyResponse<TResponse>> DeleteAsync<TResponse>(string uri)
+        {
+            var proxyResponse = new ProxyResponse<TResponse>();
+            try
+            {
+                using HttpResponseMessage response = await _client.DeleteAsync(uri);
+                if (!response.IsSuccessStatusCode)
+                {
+                    proxyResponse.Status = response.StatusCode.ToString();
+                    proxyResponse.ErrorMessage = response.ReasonPhrase ?? string.Empty;
+                    return proxyResponse;
+                }
+                proxyResponse.Status = response.StatusCode.ToString();
+            }
+            catch (Exception ex)
+            {
+                
+            }
             return proxyResponse;
         }
     }

@@ -47,10 +47,11 @@
         </TemplateColumn>
         <PropertyColumn Property="user => user.FirstName" Sortable="true"/>
         <PropertyColumn Property="user => user.LastName" Sortable="true" />
+        <PropertyColumn Property="user => user.Enabled"/>
 
         <TemplateColumn Context="users">
             <a class="btn btn-sm btn-primary" href="@($"/edit-user/{users.Id}")">Edit</a>
-            <a class="btn btn-sm btn-danger" href="#">Delete</a>
+            @* <a class="btn btn-sm btn-danger" href="@($"/delete-user/{users.Id}")">Delete</a> *@
         </TemplateColumn>
     </QuickGrid>
 }

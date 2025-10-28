@@ -26,7 +26,8 @@ namespace Fortin.Infrastructure.Implementation
             {
                 Username = newUser.Username,
                 FirstName = newUser.FirstName,
-                LastName = newUser.LastName
+                LastName = newUser.LastName,
+                Enabled = true
             };
 
             _appDbContext.Users.Add(employee);
@@ -59,6 +60,33 @@ namespace Fortin.Infrastructure.Implementation
                 users = users.Where(c => c.LastName.Contains(userResourceParameter.LastName.Trim()));
 
             return await users.ToListAsync();
+        }
+
+        public async Task DeleteUserAsync(long id)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+         
+            if (user != null)
+            {
+                //_appDbContext.Users.Remove(user);
+                user.Enabled = false;
+                await _appDbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateUserAsync(long userId, UpdateUserDto user)
+        {
+            var existingUser = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (existingUser != null)
+            {
+                existingUser.Username = user.Username;
+                existingUser.FirstName = user.FirstName;
+                existingUser.LastName = user.LastName;
+                existingUser.Enabled = user.Enabled;
+
+                await _appDbContext.SaveChangesAsync();
+            }
         }
     }
 }

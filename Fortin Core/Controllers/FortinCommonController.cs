@@ -64,5 +64,27 @@ namespace Fortin.API.Controllers
 
             return Ok(user);
         }
+
+        [HttpPut("/users/{userId}")]
+        public async Task<IActionResult> UpdateUserAsync(long userId, [FromBody] UpdateUserDto user)
+        {
+            if (user == null || userId <= 0)
+            {
+                return BadRequest();
+            }
+            //if (existingUser == null)
+            //{
+            //    return NotFound();
+            //}
+            await _userEfRepository.UpdateUserAsync(userId, user);
+            return NoContent();
+        }
+
+        [HttpDelete("/users/{userId}", Name ="DeleteUserById")]
+        public async Task<IActionResult> DeleteUserAsync(long userId)
+        {
+            await _userEfRepository.DeleteUserAsync(userId);
+            return NoContent();
+        }
     }
 }

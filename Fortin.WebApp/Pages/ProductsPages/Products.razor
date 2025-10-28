@@ -83,7 +83,7 @@
         </tbody>
     </table> *@
 
-    <QuickGrid Class="table" Items="products.Items.AsQueryable()" Virtualize="true">
+    <QuickGrid Class="table table-striped table-hover" Items="products.Items.AsQueryable()" Virtualize="true">
         <PropertyColumn Property="product => product.Name" Title="Product Name" Sortable="true" />
         <PropertyColumn Property="product => product.ProductNumber" Title="Product Number" Sortable="true" />
         <PropertyColumn Property="product => product.ListPrice" Title="List Price" Sortable="true" />

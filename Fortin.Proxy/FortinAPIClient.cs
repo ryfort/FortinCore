@@ -34,6 +34,18 @@ namespace Fortin.Proxy
             return httpResponseMessage?.Data;
         }
 
+        public async Task<User> UpdateUserAsync(long userId, UpdateUserDto updateUser)
+        {
+            var httpResponseMessage = await PutAsync<User, object>($"users/{userId}", updateUser);
+
+            return httpResponseMessage?.Data;
+        }
+
+        public async Task DeleteUserAsync(long userId)
+        {
+            var httpResponseMessage = await DeleteAsync<User>($"users/{userId}");
+        }
+
         private void ConfigureClient()
         {
             _client.BaseAddress = new Uri(_baseUrl.FortinAPI);

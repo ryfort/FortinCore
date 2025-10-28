@@ -30,14 +30,15 @@
 
     private async Task UpdateUserAsync(User user)
     {
-        var userToAdd = new AddUserDto()
+        var userToUpdate = new UpdateUserDto()
         {
             Username = user.Username,
             FirstName = user.FirstName,
-            LastName = user.LastName
+            LastName = user.LastName,
+            Enabled = user.Enabled
         };
 
-        // var newUser = await _fortinClient.CreateUserAsync(userToAdd);
+        var newUser = await _fortinClient.UpdateUserAsync(Id, userToUpdate);
 
         NavigationManager.NavigateTo("/users");
     }
