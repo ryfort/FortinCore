@@ -10,7 +10,8 @@ namespace Fortin.Infrastructure.Interface
 {
     public interface IProductRepository
     {
-        Task<IQueryable<Product>> GetProductsAsync();
+        IQueryable<Product> GetProductsAsync();
         Task<PagedList<ProductDto>> GetProductsAsync(ProductResourceParameter productResourceParameter);
+        Task UpdateProductAsync(int productId, ProductDto product);
     }
 }

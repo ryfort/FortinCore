@@ -19,7 +19,7 @@ namespace Fortin.API.Controllers
         [HttpGet("/products")]
         public async Task<ActionResult<PagedList<ProductDto>>> GetProducts([FromQuery] ProductResourceParameter? query)
         {
-            var products = await _productRepository.GetProductsAsync(query); 
+            var products = await _productRepository.GetProductsAsync(query);
 
             return products;
         }
@@ -27,10 +27,31 @@ namespace Fortin.API.Controllers
         [HttpGet("/products/{productId}")]
         public async Task<IActionResult> GetProductById(int productId)
         {
-            var products = await _productRepository.GetProductsAsync();
-            var product = products.Where(p => p.ProductId == productId);
+            var products = _productRepository.GetProductsAsync();
+            var product = products.FirstOrDefault(p => p.ProductId == productId);
+                                  //.Select(p =>
+                                  //  {
+                                  //      var product = new ProductDto()
+                                  //      {
+                                  //          Name = p.Name,
+                                  //          ProductNumber = p.ProductNumber,
+                                  //          ListPrice = p.ListPrice,
+                                  //          Color = p.Color ?? string.Empty,
+                                  //          ModelName = p.ProductModel != null ? p.ProductModel.Name ?? string.Empty : string.Empty
+                                  //      };
+
+                                  //      return product;
+                                  //  });
 
             return Ok(product);
+        }
+
+        [HttpPut("/products/{productId}")]
+        public async Task<IActionResult> UpdateProductById(int productId, [FromBody] ProductDto product)
+        {
+            await _productRepository.UpdateProductAsync(productId, product);
+
+            return Ok();
         }
 
         [HttpGet("/productmodels/{productModelId}/products")]

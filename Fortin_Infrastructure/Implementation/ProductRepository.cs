@@ -20,7 +20,7 @@ namespace Fortin.Infrastructure.Implementation
 
         public async Task<PagedList<ProductDto>> GetProductsAsync(ProductResourceParameter resourceParameter)
         {
-            var collection = await GetProductsAsync();
+            var collection = GetProductsAsync();
 
             //if (resourceParameter == null)
             //    return collection.ToList();
@@ -30,10 +30,13 @@ namespace Fortin.Infrastructure.Implementation
 
             var productCollection = collection.AsNoTracking().Select(p => new ProductDto()
             {
+                Id = p.ProductId,
                 Name = p.Name,
                 ProductNumber = p.ProductNumber,
                 ListPrice = p.ListPrice,
-                Color = p.Color ?? string.Empty
+                Color = p.Color ?? string.Empty,
+                //ModelName = p.ProductModel != null ? p.ProductModel.Name ?? string.Empty : string.Empty // implicitly joins ProductModel table without using Include()
+                ModelName = p.ProductModel!.Name ?? string.Empty
             });
 
             var products = await PagedList<ProductDto>.CreateAsync(productCollection, resourceParameter.Page, resourceParameter.PageSize);
@@ -45,9 +48,24 @@ namespace Fortin.Infrastructure.Implementation
             return products;
         }
 
-        public async Task<IQueryable<Product>> GetProductsAsync()
+        public IQueryable<Product> GetProductsAsync()
         {
             return _dbContext.Products;
+        }
+
+        public async Task UpdateProductAsync(int productId, ProductDto product)
+        {
+            var productEntity = await _dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
+
+            if (productEntity != null)
+            {
+                productEntity.Name = product.Name;
+                productEntity.ProductNumber = product.ProductNumber;
+                productEntity.ListPrice = product.ListPrice;
+                productEntity.Color = product.Color;
+
+                _dbContext.SaveChanges();
+            }
         }
     }
 }

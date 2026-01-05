@@ -46,11 +46,23 @@ namespace Fortin.Proxy
             return response.Data;
         }
 
+        public async Task<ProductDto> GetProductById(int productId)
+        {
+            var response = await GetAsync<ProductDto, object>($"/products/{productId}", null);
+
+            return response.Data;
+        }
+
         public async Task<ProductDto> GetProductsByModel(int modelId)
         {
             var response = await GetAsync<ProductDto, object>($"/productmodels/{modelId}/products", null);
 
             return response.Data;
+        }
+
+        public async Task UpdateProductAsync(int productId, ProductDto product)
+        {
+            await PutAsync<object, ProductDto>($"/products/{productId}", product);
         }
 
         private void ConfigureClient()
