@@ -1,0 +1,104 @@
+﻿@inject AdventureWorksClient _adventureWorksClient
+@using Microsoft.Extensions.Options
+@inject IOptionsMonitor<ProxyBaseUrls> _baseUrl
+@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
+
+@if (Products is null)
+{
+    <p>Loading...</p>
+}
+else
+@* @if (Products is not null) *@
+{
+    
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Product Number</th>
+                <th>Model Name</th>
+                <th>List Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.ProductNumber</td>
+                    <td>@product.ModelName</td>
+                    <td>@product.ListPrice</td>
+                    <td><button class="btn btn-primary" @onclick="@(() => EditProduct(product.Id))">Edit</button></td>
+                </tr>
+            }
+            @* <Virtualize Items="this.Products"Context="product">
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.ProductNumber</td>
+                    <td>@product.ModelName</td>
+                    <td>@product.ListPrice</td>
+                    <td><button class="btn btn-primary" @onclick="@(() => EditProduct(product.Id))">Edit</button></td>
+                </tr>
+            </Virtualize> *@
+        </tbody>
+    </table>
+}
+
+@code {
+    public List<ProductModel>? Products { get; set; }
+
+    [Parameter]
+    public string SearchedProduct { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<int> OnEditProduct { get; set; }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetProducts();
+    }
+    public async Task GetProductList()
+    {
+        await GetProducts();
+    }
+
+    private async Task GetProducts()
+    {
+        var product = new ProductResourceParameter()
+        {
+            ProductName = SearchedProduct,
+            Page = 1,
+            PageSize = 10
+        };
+
+        var result = await _adventureWorksClient.GetProductsAsync(product);
+        Products = MapToProductModel(result.Items);
+    }
+
+    private List<ProductModel> MapToProductModel(List<ProductDto> dto)
+    {
+        var models = dto.Select(m =>
+            {
+                var prod = new ProductModel
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    ProductNumber = m.ProductNumber,
+                    ModelName = m.ModelName,
+                    ListPrice = m.ListPrice
+                };
+
+                return prod;
+            }
+        ).ToList();
+
+        return models;
+    }
+
+    private async Task EditProduct(int productId)
+    {
+        await OnEditProduct.InvokeAsync(productId);
+    }
+}

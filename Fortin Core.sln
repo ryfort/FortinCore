@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fortin.Proxy", "Fortin.Prox
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fortin.WebApp", "Fortin.WebApp\Fortin.WebApp.csproj", "{F6B285D8-C4B3-4F69-8210-19F4BC4E7482}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fortin.Web", "Fortin.Web\Fortin.Web.csproj", "{E798E2D2-28FD-357C-0983-4D931D4F2482}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fortin.Domain", "Fortin.Domain\Fortin.Domain.csproj", "{7B23714D-1954-4DA4-A321-4DB8BE3A43CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{F6B285D8-C4B3-4F69-8210-19F4BC4E7482}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6B285D8-C4B3-4F69-8210-19F4BC4E7482}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6B285D8-C4B3-4F69-8210-19F4BC4E7482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E798E2D2-28FD-357C-0983-4D931D4F2482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E798E2D2-28FD-357C-0983-4D931D4F2482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E798E2D2-28FD-357C-0983-4D931D4F2482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E798E2D2-28FD-357C-0983-4D931D4F2482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B23714D-1954-4DA4-A321-4DB8BE3A43CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B23714D-1954-4DA4-A321-4DB8BE3A43CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B23714D-1954-4DA4-A321-4DB8BE3A43CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B23714D-1954-4DA4-A321-4DB8BE3A43CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

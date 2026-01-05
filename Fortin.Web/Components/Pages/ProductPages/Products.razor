@@ -1,0 +1,43 @@
+﻿@page "/products"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<h3>Products</h3>
+<div class="row g-1">
+    <div class="col-4">
+        <div class="input-group">
+            <InputText @bind-Value="this.searchText" class="form-control" placeholder="Enter product name"></InputText>
+            <button @onclick="SearchProduct" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</div>
+<ProductList @ref="productList" SearchedProduct="@this.searchedProduct" OnEditProduct="EditProduct"></ProductList>
+
+@if (editMode)
+{
+    <Product_Edit ProductId="this.productId" OnValidProductSubmit="UpdateProductList"></Product_Edit>
+}
+
+@code {
+    private string searchText;
+    private string searchedProduct = string.Empty;
+    private int productId;
+    private bool editMode = false;
+    private ProductList? productList;
+
+    private void EditProduct(int productId)
+    {
+        this.productId = productId;
+        editMode = true;
+    }
+
+    private void UpdateProductList()
+    {
+        editMode = false;
+    }
+
+    private void SearchProduct()
+    {
+        this.searchedProduct = this.searchText;
+        editMode = false;
+    }
+}

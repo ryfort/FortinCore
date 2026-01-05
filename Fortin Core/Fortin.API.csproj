@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Fortin.API</RootNamespace>
+    <UserSecretsId>ae5e8310-af0e-414e-97a3-900b4fe5e6ad</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fortin.Domain\Fortin.Domain.csproj" />
     <ProjectReference Include="..\Fortin.Proxy\Fortin.Proxy.csproj" />
     <ProjectReference Include="..\Fortin_Infrastructure\Fortin.Infrastructure.csproj" />
   </ItemGroup>
