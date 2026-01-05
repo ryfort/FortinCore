@@ -1,5 +1,8 @@
-﻿using Fortin.Infrastructure.Implementation;
+﻿using Fortin.Domain.Implementation;
+using Fortin.Domain.Interface;
+using Fortin.Infrastructure.Implementation;
 using Fortin.Infrastructure.Interface;
+using Fortin.Infrastructure.Services;
 using Fortin.Proxy;
 
 namespace Fortin.API.Configuration
@@ -12,6 +15,9 @@ namespace Fortin.API.Configuration
             services.AddScoped<IUserEFRepository, UserEFRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductModelRepository, ProductModelRepository>();
+
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IJwtService, JwtService>();
 
             return services;
         }

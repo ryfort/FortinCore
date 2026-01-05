@@ -1,10 +1,12 @@
 using Fortin.API;
 using Fortin.API.Configuration;
+using Fortin.API.Filters;
 using Fortin.Common.Configuration;
 using Fortin.Infrastructure;
 using Fortin.Infrastructure.Implementation;
 using Fortin.Infrastructure.Interface;
 using Fortin.Proxy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
@@ -14,6 +16,7 @@ var connectionStrings = builder.Configuration.GetSection("ConnectionStrings");
 
 builder.Services.Configure<ConnectionStrings>(connectionStrings);
 builder.Services.Configure<ProxyBaseUrls>(builder.Configuration.GetSection("ProxyBaseUrls"));
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtSettings"));
 // Add services to the container.
 builder.Services.AddRepositoryServices();
 builder.Services.AddProxyServices();
@@ -23,7 +26,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddDbContext<AdventureWorksDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("AdventureWorks")));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<LogFilter>();
+    //options.Filters.Add(new ServiceFilterAttribute(typeof(LogFilter)));
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -37,10 +44,11 @@ builder.Services.AddSwaggerGen();
 
 //builder.Services.AddHttpClient<HttpProxy>();
 
+var allowedCorsOrigins = builder.Configuration.GetSection("Cors:AllowedCorsOrigins").Get<string[]>()?? [];
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
-        builder.WithOrigins("https://localhost:7027")
+        builder.WithOrigins(allowedCorsOrigins)
                .AllowAnyMethod()
                .AllowAnyHeader()
         );
