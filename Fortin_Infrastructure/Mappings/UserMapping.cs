@@ -16,7 +16,8 @@ namespace Fortin.Infrastructure.Mappings
             {
                 Username = user.Username,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                Enabled = user.Enabled
             };
         }
     }

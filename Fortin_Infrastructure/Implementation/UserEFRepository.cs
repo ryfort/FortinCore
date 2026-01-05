@@ -50,7 +50,7 @@ namespace Fortin.Infrastructure.Implementation
         {
             var users = _appDbContext.Users as IQueryable<User>;
 
-            if (string.IsNullOrEmpty(userResourceParameter.FirstName) && string.IsNullOrEmpty(userResourceParameter.LastName))
+            if (string.IsNullOrEmpty(userResourceParameter.FirstName) && string.IsNullOrEmpty(userResourceParameter.LastName) && string.IsNullOrEmpty(userResourceParameter.Username))
                 return await users.ToListAsync();
 
             if (!string.IsNullOrEmpty(userResourceParameter.FirstName))
@@ -58,6 +58,9 @@ namespace Fortin.Infrastructure.Implementation
 
             if (!string.IsNullOrEmpty(userResourceParameter.LastName))
                 users = users.Where(c => c.LastName.Contains(userResourceParameter.LastName.Trim()));
+
+            if (!string.IsNullOrEmpty(userResourceParameter.Username))
+                users = users.AsNoTracking().Where(c => c.Username == userResourceParameter.Username.Trim());
 
             return await users.ToListAsync();
         }

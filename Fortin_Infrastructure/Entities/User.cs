@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fortin.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Fortin.Infrastructure.Entities
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        //public UserRole Role { get; set; } = UserRole.Customer;
         public bool Enabled { get; set; }
     }
 }

@@ -6,17 +6,22 @@
     <h3>@Title</h3>
 
     <EditForm Model="User" Enhance="true" method="post" FormName="AddOrEditUser" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
         <div class="mb-3">
             <label for="Username">Username</label>
             <InputText id="Username" @bind-Value="User.Username" class="form-control"></InputText>
+            <ValidationMessage For="() => User.Username"></ValidationMessage>
         </div>
         <div class="mb-3">
             <label for="Username">First Name</label>
             <InputText @bind-Value="User.FirstName" class="form-control"></InputText>
+            <ValidationMessage For="() => User.FirstName"></ValidationMessage>
         </div>
         <div class="mb-3">
             <label for="Username">Last Name</label>
             <InputText @bind-Value="User.LastName" class="form-control"></InputText>
+            <ValidationMessage For="() => User.LastName"></ValidationMessage>
         </div>
         @if(IsEditMode)
         {
